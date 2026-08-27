@@ -39,3 +39,9 @@ Thumbs.db
 
 # Vercel
 .vercel
+
+# Local Database Files (SQLite, etc)
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
