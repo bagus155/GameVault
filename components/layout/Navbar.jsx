@@ -130,12 +130,59 @@ export default function Navbar() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [mobileSearch, setMobileSearch] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const searchRef = useRef(null);
+
+  // Load history
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('gamevault_search_history');
+      if (saved) setHistory(JSON.parse(saved));
+    } catch (e) {}
+  }, []);
+
+  // Click outside to close history
+  useEffect(() => {
+    function handleClick(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowHistory(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const saveToHistory = (term) => {
+    if (!term) return;
+    const newHistory = [term, ...history.filter(h => h !== term)].slice(0, 5);
+    setHistory(newHistory);
+    localStorage.setItem('gamevault_search_history', JSON.stringify(newHistory));
+  };
+
+  const removeHistoryItem = (term, e) => {
+    e.stopPropagation();
+    const newHistory = history.filter(h => h !== term);
+    setHistory(newHistory);
+    localStorage.setItem('gamevault_search_history', JSON.stringify(newHistory));
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
-    router.push(`/?search=${encodeURIComponent(query.trim())}`);
+    const term = query.trim();
+    saveToHistory(term);
+    router.push(`/?search=${encodeURIComponent(term)}`);
     setMobileSearch(false);
+    setShowHistory(false);
+  };
+
+  const handleHistoryClick = (term) => {
+    setQuery(term);
+    saveToHistory(term);
+    router.push(`/?search=${encodeURIComponent(term)}`);
+    setMobileSearch(false);
+    setShowHistory(false);
   };
 
   return (
@@ -152,19 +199,55 @@ export default function Navbar() {
         </Link>
 
         {/* ── Center: Search Bar (desktop) ── */}
-        <form onSubmit={handleSearch} className="hidden sm:block flex-1 max-w-xl">
-          <div className="flex items-center gap-2 bg-[#121212] border border-[#2E2E2E] rounded-[8px] px-3 h-10 focus-within:border-[#A1A1AA] transition-colors duration-150">
-            <SearchIcon />
-            <input
-              id="search-input"
-              type="text"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="Cari game..."
-              className="flex-1 bg-transparent text-white text-sm font-sans placeholder-[#A1A1AA] outline-none"
-            />
-          </div>
-        </form>
+        <div className="hidden sm:block flex-1 max-w-xl relative" ref={searchRef}>
+          <form onSubmit={handleSearch}>
+            <div className="flex items-center gap-2 bg-[#121212] border border-[#2E2E2E] rounded-[8px] px-3 h-10 focus-within:border-[#A1A1AA] transition-colors duration-150">
+              <SearchIcon />
+              <input
+                id="search-input"
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onFocus={() => setShowHistory(true)}
+                placeholder="Cari game..."
+                className="flex-1 bg-transparent text-white text-sm font-sans placeholder-[#A1A1AA] outline-none"
+                autoComplete="off"
+              />
+            </div>
+          </form>
+
+          {/* Search History Dropdown */}
+          {showHistory && history.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-[#1E1E1E] border border-[#2E2E2E] rounded-[8px] shadow-xl overflow-hidden z-50">
+              <div className="px-3 py-2 text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wide border-b border-[#2E2E2E]">
+                Riwayat Pencarian
+              </div>
+              <ul className="py-1">
+                {history.map((term, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between px-3 py-2.5 hover:bg-[#262626] cursor-pointer group"
+                    onClick={() => handleHistoryClick(term)}
+                  >
+                    <div className="flex items-center gap-2 text-sm text-white font-sans">
+                      <SearchIcon />
+                      <span className="group-hover:text-[#EAB308] transition-colors">{term}</span>
+                    </div>
+                    <button
+                      onClick={(e) => removeHistoryItem(term, e)}
+                      className="text-[#A1A1AA] hover:text-[#EF4444] p-1 rounded-md transition-colors"
+                      aria-label="Hapus riwayat"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
         {/* ── Mobile: Search toggle button ── */}
         <div className="sm:hidden flex-1" />
@@ -216,9 +299,41 @@ export default function Navbar() {
                 placeholder="Cari game..."
                 autoFocus
                 className="flex-1 bg-transparent text-white text-sm font-sans placeholder-[#A1A1AA] outline-none"
+                autoComplete="off"
               />
             </div>
           </form>
+          
+          {/* Mobile Search History */}
+          {history.length > 0 && (
+            <div className="mt-3 bg-[#1E1E1E] border border-[#2E2E2E] rounded-[8px] shadow-sm overflow-hidden">
+              <div className="px-3 py-2 text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wide border-b border-[#2E2E2E]">
+                Riwayat Pencarian
+              </div>
+              <ul className="py-1 max-h-48 overflow-y-auto">
+                {history.map((term, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between px-3 py-2 hover:bg-[#262626] cursor-pointer group"
+                    onClick={() => handleHistoryClick(term)}
+                  >
+                    <div className="flex items-center gap-2 text-sm text-white font-sans">
+                      <SearchIcon />
+                      <span>{term}</span>
+                    </div>
+                    <button
+                      onClick={(e) => removeHistoryItem(term, e)}
+                      className="text-[#A1A1AA] hover:text-[#EF4444] p-1 rounded-md transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </header>
