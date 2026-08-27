@@ -1,4 +1,4 @@
-# GameVault 🎮
+# GameVault
 
 Aplikasi web katalog game *fullstack* berbasis **Next.js 14 (App Router)**. Terintegrasi dengan **RAWG API** dan **Steam API** untuk menyajikan data game terlengkap, ulasan pemain dari seluruh dunia, serta fitur interaktif seperti favorit dan terjemahan otomatis.
 
