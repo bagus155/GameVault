@@ -129,3 +129,39 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Gagal menyimpan ulasan.' }, { status: 500 });
   }
 }
+
+// ── DELETE: Delete a review ───────────────────────────────────────────
+export async function DELETE(request) {
+  const user = getAuthUser(request);
+  if (!user) {
+    return NextResponse.json({ error: 'Silakan login terlebih dahulu.' }, { status: 401 });
+  }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const reviewId = searchParams.get('reviewId');
+
+    if (!reviewId) {
+      return NextResponse.json({ error: 'reviewId diperlukan.' }, { status: 400 });
+    }
+
+    // Verify ownership before deleting
+    const { getReviewByUserAndGame: _, deleteReview, ...rest } = await import('@/services/db/reviews');
+    const prismaModule = await import('@/lib/prisma');
+    const prisma = prismaModule.default;
+
+    const review = await prisma.review.findUnique({ where: { id: Number(reviewId) } });
+    if (!review) {
+      return NextResponse.json({ error: 'Ulasan tidak ditemukan.' }, { status: 404 });
+    }
+    if (review.userId !== user.id) {
+      return NextResponse.json({ error: 'Tidak diizinkan.' }, { status: 403 });
+    }
+
+    await prisma.review.delete({ where: { id: Number(reviewId) } });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('[API/reviews DELETE] Error:', error.message);
+    return NextResponse.json({ error: 'Gagal menghapus ulasan.' }, { status: 500 });
+  }
+}

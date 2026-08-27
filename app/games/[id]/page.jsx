@@ -67,16 +67,18 @@ export default async function GameDetailPage(props) {
 
   // ── Find Official Steam Box Art (if available) ──
   let officialCover = game.background_image;
+  let steamAppId = null;
   const steamStore = storesData?.results?.find(s => s.url?.includes('steampowered.com/app/'));
   if (steamStore) {
     const match = steamStore.url.match(/app\/(\d+)/);
     if (match && match[1]) {
-      officialCover = `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${match[1]}/library_600x900.jpg`;
+      steamAppId = match[1];
+      officialCover = `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${steamAppId}/library_600x900.jpg`;
     }
   }
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
       {/* ── Back Link ── */}
       <a
@@ -90,7 +92,7 @@ export default async function GameDetailPage(props) {
       </a>
 
       {/* ── Hero Banner ── */}
-      <div className="relative w-full bg-[#1E1E1E] rounded-card overflow-hidden mb-8" style={{ minHeight: '320px' }}>
+      <div className="relative w-full bg-[#1E1E1E] rounded-card overflow-hidden mb-6 sm:mb-8" style={{ minHeight: 'clamp(240px, 35vw, 320px)' }}>
         {game.background_image && (
           <Image
             src={game.background_image}
@@ -105,10 +107,10 @@ export default async function GameDetailPage(props) {
         <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-[#1E1E1E] opacity-75" />
 
         {/* Content on top of banner */}
-        <div className="relative z-10 flex flex-col sm:flex-row gap-6 p-6 sm:p-8 items-end" style={{ minHeight: '320px' }}>
+        <div className="relative z-10 flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 md:p-8 items-start sm:items-end" style={{ minHeight: 'clamp(240px, 35vw, 320px)' }}>
           {/* Cover thumbnail */}
           {game.background_image && (
-            <div className="flex-shrink-0 w-32 sm:w-40 aspect-[3/4] relative rounded-[8px] overflow-hidden border border-[#2E2E2E] bg-[#262626] shadow-lg">
+            <div className="flex-shrink-0 w-24 sm:w-32 md:w-40 aspect-[3/4] relative rounded-[8px] overflow-hidden border border-[#2E2E2E] bg-[#262626] shadow-lg">
               <Image
                 src={officialCover || game.background_image}
                 alt={game.name}
@@ -128,15 +130,15 @@ export default async function GameDetailPage(props) {
             </div>
 
             {/* Title */}
-            <h1 className="font-heading font-semibold text-white text-3xl sm:text-4xl leading-tight">
+            <h1 className="font-heading font-semibold text-white text-2xl sm:text-3xl md:text-4xl leading-tight">
               {game.name}
             </h1>
 
             {/* RAWG Rating */}
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2">
-                <StarRating rating={Math.round(game.rating ?? 0)} size={18} />
-                <span className="text-[#A1A1AA] text-sm font-sans">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <StarRating rating={Math.round(game.rating ?? 0)} size={16} />
+                <span className="text-[#A1A1AA] text-xs sm:text-sm font-sans">
                   {game.rating?.toFixed(1)} ({game.ratings_count?.toLocaleString()} ulasan RAWG)
                 </span>
               </div>
@@ -159,6 +161,22 @@ export default async function GameDetailPage(props) {
               coverUrl={game.background_image}
             />
           </div>
+
+          {/* Right Action (Steam Button) */}
+          {steamAppId && (
+            <div className="flex-shrink-0 w-full sm:w-auto mt-4 sm:mt-0 pb-1">
+              <a
+                href={`https://store.steampowered.com/app/${steamAppId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#171A21] hover:bg-[#2A475E] text-[#66C0F4] hover:text-white border border-[#2A475E] hover:border-[#66C0F4] transition-all duration-300 rounded-[8px] font-sans font-semibold text-sm shadow-xl group w-full"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/steam-logo.svg" alt="Steam Logo" className="w-5 h-5 object-contain transition-transform group-hover:scale-110" />
+                Mainkan di Steam
+              </a>
+            </div>
+          )}
         </div>
       </div>
 

@@ -129,28 +129,30 @@ export default function Navbar() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const [query, setQuery] = useState('');
+  const [mobileSearch, setMobileSearch] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
     router.push(`/?search=${encodeURIComponent(query.trim())}`);
+    setMobileSearch(false);
   };
 
   return (
     <header className="sticky top-0 z-40 bg-[#1E1E1E] border-b border-[#2E2E2E]">
-      <nav className="max-w-screen-xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
+      <nav className="max-w-screen-xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center gap-3 sm:gap-4">
 
         {/* ── Left: Logo ── */}
         <Link
           href="/"
           id="navbar-logo"
-          className="flex-shrink-0 text-white font-heading font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity duration-150"
+          className="flex-shrink-0 font-pixel text-white text-[10px] sm:text-sm leading-none tracking-tight hover:opacity-80 transition-opacity duration-150"
         >
           Game<span className="text-[#EAB308]">Vault</span>
         </Link>
 
-        {/* ── Center: Search Bar ── */}
-        <form onSubmit={handleSearch} className="flex-1 max-w-xl">
+        {/* ── Center: Search Bar (desktop) ── */}
+        <form onSubmit={handleSearch} className="hidden sm:block flex-1 max-w-xl">
           <div className="flex items-center gap-2 bg-[#121212] border border-[#2E2E2E] rounded-[8px] px-3 h-10 focus-within:border-[#A1A1AA] transition-colors duration-150">
             <SearchIcon />
             <input
@@ -164,10 +166,20 @@ export default function Navbar() {
           </div>
         </form>
 
+        {/* ── Mobile: Search toggle button ── */}
+        <div className="sm:hidden flex-1" />
+        <button
+          onClick={() => setMobileSearch(v => !v)}
+          className="sm:hidden w-9 h-9 flex items-center justify-center text-[#A1A1AA] hover:text-white bg-[#262626] rounded-[8px] transition-colors"
+          aria-label="Toggle search"
+        >
+          <SearchIcon />
+        </button>
+
         {/* ── Right: Auth ── */}
-        <div className="flex-shrink-0 flex items-center gap-2">
+        <div className="flex-shrink-0 flex items-center gap-1.5 sm:gap-2">
           {loading ? (
-            <div className="w-24 h-9 bg-[#262626] rounded-[8px] animate-pulse" />
+            <div className="w-20 sm:w-24 h-9 bg-[#262626] rounded-[8px] animate-pulse" />
           ) : user ? (
             <ProfileDropdown user={user} onLogout={logout} />
           ) : (
@@ -175,14 +187,14 @@ export default function Navbar() {
               <Link
                 href="/auth/login"
                 id="navbar-login-btn"
-                className="px-4 py-2 text-sm font-medium font-sans text-[#A1A1AA] hover:text-white transition-colors duration-150"
+                className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium font-sans text-[#A1A1AA] hover:text-white transition-colors duration-150"
               >
                 Masuk
               </Link>
               <Link
                 href="/auth/register"
                 id="navbar-register-btn"
-                className="px-4 py-2 text-sm font-semibold font-sans text-[#121212] bg-white rounded-[8px] hover:bg-[#E5E5E5] transition-colors duration-150"
+                className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold font-sans text-[#121212] bg-white rounded-[8px] hover:bg-[#E5E5E5] transition-colors duration-150"
               >
                 Daftar
               </Link>
@@ -190,6 +202,25 @@ export default function Navbar() {
           )}
         </div>
       </nav>
+
+      {/* ── Mobile Search Expand ── */}
+      {mobileSearch && (
+        <div className="sm:hidden px-4 pb-3">
+          <form onSubmit={handleSearch}>
+            <div className="flex items-center gap-2 bg-[#121212] border border-[#2E2E2E] rounded-[8px] px-3 h-10 focus-within:border-[#A1A1AA] transition-colors duration-150">
+              <SearchIcon />
+              <input
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Cari game..."
+                autoFocus
+                className="flex-1 bg-transparent text-white text-sm font-sans placeholder-[#A1A1AA] outline-none"
+              />
+            </div>
+          </form>
+        </div>
+      )}
     </header>
   );
 }

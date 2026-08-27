@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       <body className="bg-[#121212] text-white font-sans antialiased">
         <AuthProvider>
           <Navbar />
-          <main className="min-h-[calc(100dvh-64px)]">
+          <main className="min-h-[calc(100dvh-56px)] sm:min-h-[calc(100dvh-64px)]">
             {children}
           </main>
           <footer className="border-t border-[#2E2E2E] mt-16">

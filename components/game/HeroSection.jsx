@@ -50,8 +50,8 @@ export default function HeroSection({ games = [] }) {
 
   return (
     <section
-      className="relative w-full bg-[#1E1E1E] rounded-card overflow-hidden mb-8"
-      style={{ minHeight: '380px' }}
+      className="relative w-full bg-[#1E1E1E] rounded-card overflow-hidden mb-6 sm:mb-8"
+      style={{ minHeight: 'clamp(260px, 40vw, 380px)' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-label="Trending games hero"
@@ -76,7 +76,7 @@ export default function HeroSection({ games = [] }) {
       </div>
 
       {/* ── Content ── */}
-      <div className="relative z-10 flex flex-col justify-end h-full p-6 sm:p-8" style={{ minHeight: '380px' }}>
+      <div className="relative z-10 flex flex-col justify-end h-full p-4 sm:p-6 md:p-8" style={{ minHeight: 'clamp(260px, 40vw, 380px)' }}>
         {/* Trending label */}
         <div className="mb-3">
           <span className="text-xs font-semibold font-sans text-[#EAB308] bg-[#1E1E1E] border border-[#EAB308] px-2.5 py-1 rounded-[6px] tracking-wide uppercase">
@@ -85,7 +85,7 @@ export default function HeroSection({ games = [] }) {
         </div>
 
         {/* Game title */}
-        <h2 className="font-heading font-semibold text-white text-2xl sm:text-4xl leading-tight mb-2 max-w-lg line-clamp-2">
+        <h2 className="font-heading font-semibold text-white text-xl sm:text-2xl md:text-4xl leading-tight mb-2 max-w-lg line-clamp-2">
           {current.name}
         </h2>
 

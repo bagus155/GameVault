@@ -4,7 +4,7 @@
    Solid color design — absolutely NO gradients
    ───────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -63,6 +63,10 @@
 @layer components {
   .font-heading {
     font-family: 'Space Grotesk', 'Poppins', sans-serif;
+  }
+
+  .font-pixel {
+    font-family: 'Press Start 2P', monospace;
   }
 
   /* Line clamp utilities */

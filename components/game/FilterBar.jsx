@@ -50,7 +50,7 @@ export default function FilterBar() {
   return (
     <div className="mb-6 space-y-3">
       {/* ── Genre Pills ── */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
         <span className="text-[#A1A1AA] text-xs font-semibold font-sans uppercase tracking-wide mr-1">
           Genre
         </span>
@@ -74,7 +74,7 @@ export default function FilterBar() {
       </div>
 
       {/* ── Sort Order ── */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
         <span className="text-[#A1A1AA] text-xs font-semibold font-sans uppercase tracking-wide mr-1">
           Urutkan
         </span>
