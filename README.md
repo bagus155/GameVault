@@ -46,40 +46,6 @@ GameVault/
     └── schema.prisma      # Skema DB (Users, Games, Reviews, Favorites)
 ```
 
-## ⚙️ Setup & Instalasi
-
-### 1. Clone & Install
-```bash
-git clone <repo-url> gamevault
-cd gamevault
-npm install
-```
-
-### 2. Environment Variables
-Buat file `.env.local` di *root* proyek dan masukkan kredensial berikut:
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/gamevault?schema=public"
-RAWG_API_KEY="your_rawg_api_key_here"
-JWT_SECRET="kunci_rahasia_untuk_enkripsi_token"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
-> Dapatkan **RAWG API Key** gratis di [rawg.io/apidocs](https://rawg.io/apidocs).
-
-### 3. Setup Database (Prisma)
-```bash
-# Push schema terbaru ke database
-npm run db:push
-
-# (Opsional) Buka visual viewer database
-npm run db:studio
-```
-
-### 4. Jalankan Aplikasi
-```bash
-npm run dev
-```
-Buka browser dan kunjungi `http://localhost:3000`.
-
 ## 🎨 Design System (Aturan UI)
 
 Proyek ini menggunakan tema estetika premium khusus:
