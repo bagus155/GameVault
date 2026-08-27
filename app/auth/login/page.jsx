@@ -40,7 +40,7 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block font-heading font-semibold text-2xl text-white tracking-tight">
+          <Link href="/" className="inline-block font-pixel text-lg text-white leading-none tracking-tight">
             Game<span className="text-[#EAB308]">Vault</span>
           </Link>
           <p className="text-[#A1A1AA] text-sm font-sans mt-1">Masuk ke akunmu</p>
