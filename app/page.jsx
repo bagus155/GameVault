@@ -17,10 +17,11 @@ export const metadata = {
 
 // ── Masonry Skeleton fallback ──────────────────
 function MasonrySkeleton() {
+  const heights = ['140%', '100%', '160%', '120%', '150%'];
   return (
     <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4">
       {Array.from({ length: 15 }).map((_, i) => (
-        <SkeletonCard key={i} />
+        <SkeletonCard key={i} className="mb-4" height={heights[i % heights.length]} />
       ))}
     </div>
   );

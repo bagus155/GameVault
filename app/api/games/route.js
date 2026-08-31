@@ -26,7 +26,11 @@ export async function GET(request) {
       platforms,
     });
 
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=86400',
+      },
+    });
   } catch (error) {
     console.error('[API/games] Error:', error.message);
     return NextResponse.json(

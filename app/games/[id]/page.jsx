@@ -11,6 +11,8 @@ import FavoriteButton from '@/components/game/FavoriteButton';
 import ReviewSection from '@/components/game/ReviewSection';
 import ScreenshotGallery from '@/components/game/ScreenshotGallery';
 import StarRating from '@/components/ui/StarRating';
+import BackButton from '@/components/ui/BackButton';
+import { getCombinedReviewsAndRating } from '@/services/db/reviews';
 
 export async function generateMetadata(props) {
   const params = await props.params;
@@ -47,12 +49,13 @@ function Tag({ children }) {
 
 export default async function GameDetailPage(props) {
   const params = await props.params;
-  let game, screenshots, storesData;
+  let game, screenshots, storesData, combinedData;
   try {
-    [game, screenshots, storesData] = await Promise.all([
+    [game, screenshots, storesData, combinedData] = await Promise.all([
       getGameById(params.id),
       getGameScreenshots(params.id),
       getGameStores(params.id).catch(() => ({ results: [] })),
+      getCombinedReviewsAndRating(params.id).catch(() => ({ rating: { average: 0, count: 0 } })),
     ]);
   } catch {
     notFound();
@@ -81,15 +84,7 @@ export default async function GameDetailPage(props) {
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
       {/* ── Back Link ── */}
-      <a
-        href="/"
-        className="inline-flex items-center gap-1.5 text-[#A1A1AA] hover:text-white text-sm font-sans mb-6 transition-colors duration-150"
-      >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        Kembali ke Katalog
-      </a>
+      <BackButton fallbackUrl="/" />
 
       {/* ── Hero Banner ── */}
       <div className="relative w-full bg-[#1E1E1E] rounded-card overflow-hidden mb-6 sm:mb-8" style={{ minHeight: 'clamp(240px, 35vw, 320px)' }}>
@@ -134,12 +129,12 @@ export default async function GameDetailPage(props) {
               {game.name}
             </h1>
 
-            {/* RAWG Rating */}
+            {/* Real Average Rating */}
             <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <StarRating rating={Math.round(game.rating ?? 0)} size={16} />
+                <StarRating rating={Math.round(combinedData?.rating?.average || game.rating || 0)} size={16} />
                 <span className="text-[#A1A1AA] text-xs sm:text-sm font-sans">
-                  {game.rating?.toFixed(1)} ({game.ratings_count?.toLocaleString()} ulasan RAWG)
+                  {combinedData?.rating?.average ? combinedData.rating.average.toFixed(1) : game.rating?.toFixed(1)} ({combinedData?.rating?.count || game.ratings_count?.toLocaleString()} ulasan)
                 </span>
               </div>
               {game.metacritic && (

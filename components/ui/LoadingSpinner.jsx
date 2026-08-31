@@ -38,10 +38,10 @@ export function PageLoader() {
 }
 
 /** Skeleton card for masonry placeholder */
-export function SkeletonCard({ className = '' }) {
+export function SkeletonCard({ className = '', height = '140%' }) {
   return (
     <div className={`bg-[#1E1E1E] rounded-card overflow-hidden break-inside-avoid ${className}`}>
-      <div className="w-full bg-[#262626] animate-pulse" style={{ paddingBottom: '140%' }} />
+      <div className="w-full bg-[#262626] animate-pulse" style={{ paddingBottom: height }} />
       <div className="p-3 space-y-2">
         <div className="h-3 bg-[#262626] rounded animate-pulse w-3/4" />
         <div className="h-2.5 bg-[#262626] rounded animate-pulse w-1/2" />

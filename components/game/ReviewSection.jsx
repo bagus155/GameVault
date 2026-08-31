@@ -62,6 +62,7 @@ function ReviewCard({ review, isOwn = false, onEdit, onDelete }) {
   const [isTranslating, setIsTranslating] = useState(false);
   const [showTranslated, setShowTranslated] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const menuRef = useRef(null);
 
   // Close menu on outside click
@@ -123,8 +124,26 @@ function ReviewCard({ review, isOwn = false, onEdit, onDelete }) {
           </div>
         </div>
 
-        {/* Right side: stars + owner menu */}
+        {/* Right side: translate + stars + owner menu */}
         <div className="flex items-center gap-2">
+          {(review.isSteam || review.isRawg) && (
+            <button
+              onClick={handleTranslate}
+              disabled={isTranslating}
+              title={showTranslated ? 'Lihat Teks Asli' : 'Terjemahkan'}
+              className={`flex items-center justify-center w-7 h-7 rounded-[6px] transition-colors ${
+                showTranslated ? 'bg-[#EAB308]/20 text-[#EAB308]' : 'text-[#A1A1AA] hover:text-white hover:bg-[#2E2E2E]'
+              } disabled:opacity-50`}
+            >
+              {isTranslating ? (
+                <Spinner size={14} />
+              ) : (
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
+                  <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                </svg>
+              )}
+            </button>
+          )}
           <StarRating rating={review.rating} size={14} />
           {isOwn && (
             <div className="relative" ref={menuRef}>
@@ -161,16 +180,17 @@ function ReviewCard({ review, isOwn = false, onEdit, onDelete }) {
       </div>
 
       <div>
-        <p className="text-[#A1A1AA] text-sm font-sans leading-relaxed whitespace-pre-wrap line-clamp-6">
+        <p className={`text-[#A1A1AA] text-sm font-sans leading-relaxed whitespace-pre-wrap ${isExpanded ? '' : 'line-clamp-6'}`}>
           {showTranslated ? translatedText : review.comment}
         </p>
-        {(review.isSteam || review.isRawg) && (
+        
+        {/* Read More Toggle */}
+        {(showTranslated ? translatedText : review.comment)?.length > 250 && (
           <button
-            onClick={handleTranslate}
-            disabled={isTranslating}
-            className="text-xs font-sans text-[#EAB308] hover:text-white transition-colors mt-2 disabled:opacity-50 font-medium"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs font-sans text-white hover:text-[#A1A1AA] transition-colors mt-1 font-medium"
           >
-            {isTranslating ? 'Menerjemahkan...' : showTranslated ? 'Lihat Teks Asli' : 'Terjemahkan ke Indonesia'}
+            {isExpanded ? 'Tutup' : 'Baca selengkapnya'}
           </button>
         )}
       </div>
@@ -278,6 +298,8 @@ export default function ReviewSection({ gameId, gameTitle, gameSlug, gameCover }
   const [loading, setLoading]     = useState(true);
   const [editingReview, setEditingReview] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null); // reviewId to delete
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchReviews = useCallback(async () => {
     try {
@@ -394,17 +416,66 @@ export default function ReviewSection({ gameId, gameTitle, gameSlug, gameCover }
           Belum ada ulasan. Jadilah yang pertama!
         </p>
       ) : (
-        <div className="space-y-3">
-          {reviews.map(review => (
-            <ReviewCard
-              key={review.id}
-              review={review}
-              isOwn={false}
-              onEdit={() => {}}
-              onDelete={() => {}}
-            />
-          ))}
-        </div>
+        <>
+          <div className="space-y-3">
+            {reviews.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(review => (
+              <ReviewCard
+                key={review.id}
+                review={review}
+                isOwn={false}
+                onEdit={() => {}}
+                onDelete={() => {}}
+              />
+            ))}
+          </div>
+          
+          {/* ── Pagination Controls ── */}
+          {Math.ceil(reviews.length / itemsPerPage) > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-6">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 bg-[#1E1E1E] text-white text-sm rounded-[6px] border border-[#2E2E2E] hover:bg-[#262626] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Prev
+              </button>
+              
+              {/* Desktop Pagination */}
+              <div className="hidden sm:flex items-center gap-2">
+                {Array.from({ length: Math.ceil(reviews.length / itemsPerPage) }, (_, i) => i + 1).map(pageNum => (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`w-8 h-8 rounded-[6px] flex items-center justify-center text-sm font-sans transition-colors ${
+                      currentPage === pageNum 
+                        ? 'bg-[#EAB308] text-[#121212] font-bold' 
+                        : 'bg-[#1E1E1E] text-[#A1A1AA] hover:text-white hover:bg-[#262626] border border-[#2E2E2E]'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+              </div>
+
+              {/* Mobile Pagination */}
+              <div className="flex sm:hidden items-center gap-1 text-[#A1A1AA] text-sm font-sans">
+                {currentPage > 1 && <span>...</span>}
+                <span className="w-8 h-8 rounded-[6px] flex items-center justify-center bg-[#EAB308] text-[#121212] font-bold mx-1">
+                  {currentPage}
+                </span>
+                {currentPage < Math.ceil(reviews.length / itemsPerPage) && <span>...</span>}
+              </div>
+
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(Math.ceil(reviews.length / itemsPerPage), p + 1))}
+                disabled={currentPage === Math.ceil(reviews.length / itemsPerPage)}
+                className="px-3 py-1.5 bg-[#1E1E1E] text-white text-sm rounded-[6px] border border-[#2E2E2E] hover:bg-[#262626] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
