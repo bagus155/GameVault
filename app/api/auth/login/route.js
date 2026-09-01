@@ -39,7 +39,7 @@ export async function POST(request) {
 
     const response = NextResponse.json({
       message: 'Login berhasil.',
-      user: { id: user.id, username: user.username, email: user.email },
+      user: { id: user.id, username: user.username, email: user.email, avatarUrl: user.avatarUrl },
     });
     response.headers.set('Set-Cookie', createAuthCookie(token));
     return response;

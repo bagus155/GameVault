@@ -66,8 +66,12 @@ export function AuthProvider({ children }) {
     router.refresh();
   };
 
+  const updateUser = useCallback((newUserData) => {
+    setUser((prev) => prev ? { ...prev, ...newUserData } : null);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

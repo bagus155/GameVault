@@ -11,9 +11,11 @@ import ProfileHeader    from '@/components/profile/ProfileHeader';
 import Top5Showcase     from '@/components/profile/Top5Showcase';
 import EditProfileModal from '@/components/profile/EditProfileModal';
 import { Spinner }         from '@/components/ui/LoadingSpinner';
+import { useAuth }         from '@/contexts/AuthContext';
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { updateUser } = useAuth();
 
   const [profile,         setProfile]         = useState(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -47,7 +49,8 @@ export default function ProfilePage() {
   const handleSaveSuccess = useCallback((updatedProfile) => {
     setProfile(updatedProfile);
     setIsEditModalOpen(false);
-  }, []);
+    updateUser({ avatarUrl: updatedProfile.avatarUrl });
+  }, [updateUser]);
 
   // ── Loading state ──────────────────────────
   if (isLoadingProfile) {
