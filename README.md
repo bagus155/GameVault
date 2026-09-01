@@ -5,7 +5,8 @@ Aplikasi web katalog game *fullstack* berbasis **Next.js 14 (App Router)**. Teri
 ## Fitur Utama
 
 - **Katalog Tanpa Batas (*Endless Scroll*)**: Jelajahi ribuan game tanpa henti berkat integrasi API paginasi *real-time* yang dioptimalkan dengan React Strict Mode yang aman.
-- **Steam Crossover**: Menggunakan ID game dari RAWG untuk melacak *App ID* di Steam, menarik **Cover Art Resmi Resolusi Tinggi (HD)** dan **Ulasan Pemain Steam (Steam Player Reviews)** secara otomatis!
+- **Profil Pengguna Interaktif**: Halaman profil yang dapat dikustomisasi! Unggah foto profil (Avatar) dan gambar sampul (Banner) ke *Supabase Storage*, tulis Bio, dan pamerkan **Top 5 Games** favoritmu dalam etalase khusus yang sangat responsif (carousel geser di versi *mobile*).
+- **Steam Crossover**: Menggunakan ID game dari RAWG untuk melacak *App ID* di Steam, menarik **Cover Art Resmi Resolusi Tinggi (HD)** dan **Ulasan Pemain Steam (Steam Player Reviews)** secara otomatis! (Bahkan Top 5 Profile otomatis memprioritaskan Cover Steam).
 - **Kombinasi Ulasan**: Membaca ulasan dari pengguna lokal (situs ini), RAWG, dan Steam dalam satu beranda komentar yang terpadu.
 - **Terjemahan Pintar**: Fitur terjemahan otomatis langsung menggunakan integrasi *Google Translate API* untuk mengalihbahasakan ulasan dari gamer luar negeri (Steam/RAWG) ke bahasa Indonesia dengan sekali klik.
 - **Visual Resolusi Tinggi**: Menghindari kompresi gambar bawaan Next.js untuk menjaga kualitas *box art* RAWG dan Steam tetap super HD (`unoptimized`).
