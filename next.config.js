@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: 'shared.akamai.steamstatic.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
     ],
   },
   // Ensure environment variables are validated at build

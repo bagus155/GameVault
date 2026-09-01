@@ -9,7 +9,7 @@
 // ─────────────────────────────────────────────
 import { NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
-import supabaseAdmin from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/supabase';
 
 const BUCKET         = 'profile-images';
 const ALLOWED_TYPES  = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -50,11 +50,11 @@ export async function POST(request) {
     const ext      = file.name.split('.').pop().toLowerCase() || 'jpg';
     const filePath = `profile/${authUser.id}/${type}-${Date.now()}.${ext}`;
 
-    const { error: uploadError } = await supabaseAdmin.storage
+    const { error: uploadError } = await getSupabaseAdmin().storage
       .from(BUCKET)
       .upload(filePath, buffer, {
         contentType:  file.type,
-        upsert:       true,      // overwrite if same path
+        upsert:       true,
         cacheControl: '3600',
       });
 
@@ -64,7 +64,7 @@ export async function POST(request) {
     }
 
     // ── Get public URL ──
-    const { data } = supabaseAdmin.storage
+    const { data } = getSupabaseAdmin().storage
       .from(BUCKET)
       .getPublicUrl(filePath);
 
