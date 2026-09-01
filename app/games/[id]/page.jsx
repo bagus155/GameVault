@@ -153,7 +153,7 @@ export default async function GameDetailPage(props) {
               gameId={String(game.id)}
               title={game.name}
               slug={game.slug}
-              coverUrl={game.background_image}
+              coverUrl={officialCover || game.background_image}
             />
           </div>
 

@@ -102,14 +102,18 @@ export default function Top5Showcase({ topGames, onOpenEditModal }) {
         Top 5 Games
       </h2>
 
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+      <div className="flex sm:grid sm:grid-cols-5 gap-3 sm:gap-4 overflow-x-auto pb-4 sm:pb-0 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
         {Array.from({ length: SLOT_COUNT }, (_, i) => {
           const position = i + 1;
           const game = slotMap[position];
 
-          return game
-            ? <FilledSlot key={position} game={game} position={position} />
-            : <EmptySlot key={position} position={position} onOpenEditModal={onOpenEditModal} />;
+          return (
+            <div key={position} className="flex-none w-[140px] sm:w-auto snap-start">
+              {game
+                ? <FilledSlot game={game} position={position} />
+                : <EmptySlot position={position} onOpenEditModal={onOpenEditModal} />}
+            </div>
+          );
         })}
       </div>
     </section>

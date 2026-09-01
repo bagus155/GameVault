@@ -77,7 +77,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <div className="w-full animate-fade-in pb-12">
+      <div className="w-full animate-fade-in pb-4 sm:pb-12">
         {/* ── Profile Header ── */}
         <ProfileHeader
           profile={profile}

@@ -23,13 +23,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id">
-      <body className="bg-[#121212] text-white font-sans antialiased">
+      <body className="bg-[#121212] text-white font-sans antialiased flex flex-col min-h-[100dvh]">
         <AuthProvider>
           <Navbar />
-          <main className="min-h-[calc(100dvh-56px)] sm:min-h-[calc(100dvh-64px)]">
+          <main className="flex-grow">
             {children}
           </main>
-          <footer className="border-t border-[#2E2E2E] mt-16">
+          <footer className="border-t border-[#2E2E2E] mt-8 sm:mt-16">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
               <p className="text-[#A1A1AA] text-xs font-sans">
                 © {new Date().getFullYear()} GameVault. Data game dari{' '}
@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
                   RAWG
                 </a>.
               </p>
-              <p className="text-[#A1A1AA] text-xs font-sans">
+              <p className="text-[#A1A1AA] text-xs font-sans text-center sm:text-right">
                 Dibangun dengan Next.js · Prisma · PostgreSQL
               </p>
             </div>
