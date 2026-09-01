@@ -213,7 +213,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-[#1E1E1E] border-b border-[#2E2E2E]">
-      <nav className="max-w-screen-xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center gap-3 sm:gap-4">
+      <nav className="max-w-screen-xl mx-auto w-full px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-4">
 
         {/* ── Left: Logo ── */}
         <Link
@@ -225,7 +225,7 @@ export default function Navbar() {
         </Link>
 
         {/* ── Center: Search Bar (desktop) ── */}
-        <div className="hidden sm:block flex-1 max-w-xl relative" ref={searchRef}>
+        <div className="hidden sm:block flex-1 max-w-2xl relative px-4" ref={searchRef}>
           <form onSubmit={handleSearch}>
             <div className="flex items-center gap-2 bg-[#121212] border border-[#2E2E2E] rounded-[8px] px-3 h-10 focus-within:border-[#A1A1AA] transition-colors duration-150">
               <SearchIcon />
@@ -244,7 +244,7 @@ export default function Navbar() {
 
           {/* Search History Dropdown */}
           {showHistory && history.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-[#1E1E1E] border border-[#2E2E2E] rounded-[8px] shadow-xl overflow-hidden z-50">
+            <div className="absolute top-full left-4 right-4 mt-2 bg-[#1E1E1E] border border-[#2E2E2E] rounded-[8px] shadow-xl overflow-hidden z-50">
               <div className="px-3 py-2 text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wide border-b border-[#2E2E2E]">
                 Riwayat Pencarian
               </div>
@@ -275,24 +275,22 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* ── Mobile: Search toggle button ── */}
-        <div className="sm:hidden flex-1" />
-        <button
-          onClick={() => setMobileSearch(v => !v)}
-          className="sm:hidden w-9 h-9 flex items-center justify-center text-[#A1A1AA] hover:text-white bg-[#262626] rounded-[8px] transition-colors"
-          aria-label="Toggle search"
-        >
-          <SearchIcon />
-        </button>
+        {/* ── Right: Mobile Search Toggle & Auth ── */}
+        <div className="flex-shrink-0 flex items-center gap-2 sm:gap-4">
+          <button
+            onClick={() => setMobileSearch(v => !v)}
+            className="sm:hidden w-9 h-9 flex items-center justify-center text-[#A1A1AA] hover:text-white bg-[#262626] rounded-[8px] transition-colors"
+            aria-label="Toggle search"
+          >
+            <SearchIcon />
+          </button>
 
-        {/* ── Right: Auth ── */}
-        <div className="flex-shrink-0 flex items-center gap-1.5 sm:gap-2">
           {loading ? (
             <div className="w-20 sm:w-24 h-9 bg-[#262626] rounded-[8px] animate-pulse" />
           ) : user ? (
             <ProfileDropdown user={user} onLogout={logout} />
           ) : (
-            <>
+            <div className="flex items-center gap-1 sm:gap-2">
               <Link
                 href="/auth/login"
                 id="navbar-login-btn"
@@ -307,7 +305,7 @@ export default function Navbar() {
               >
                 Daftar
               </Link>
-            </>
+            </div>
           )}
         </div>
       </nav>

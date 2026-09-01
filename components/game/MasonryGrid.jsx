@@ -58,7 +58,13 @@ export default function MasonryGrid({ games: initialGames = [], search = '', gen
       });
       const data = await res.json();
 
-      const results = data.results ?? [];
+      let results = data.results ?? [];
+      
+      // Shuffle results for a more dynamic and random feel (if not searching)
+      if (!search.trim()) {
+        results = results.sort(() => Math.random() - 0.5);
+      }
+
       setGames(prev => reset ? results : [...prev, ...results]);
       setHasMore(!!data.next);
     } catch (err) {
@@ -71,10 +77,12 @@ export default function MasonryGrid({ games: initialGames = [], search = '', gen
 
   // Re-fetch when filters change
   useEffect(() => {
-    setPage(1);
+    // Pick a random starting page (1-10) for non-search views to randomize the catalog
+    const startPage = search.trim() ? 1 : Math.floor(Math.random() * 10) + 1;
+    setPage(startPage);
     setHasMore(true);
-    fetchGames(1, true);
-  }, [fetchGames]);
+    fetchGames(startPage, true);
+  }, [fetchGames, search]);
 
   // Infinite scroll: observe loader sentinel
   useEffect(() => {
