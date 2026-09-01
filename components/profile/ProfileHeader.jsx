@@ -21,7 +21,7 @@ export default function ProfileHeader({ profile, onOpenEditModal }) {
   return (
     <div className="w-full">
       {/* ── Banner ── */}
-      <div className="relative w-full aspect-[3/1] bg-[#161616] overflow-hidden rounded-none sm:rounded-xl border-b border-[#2A2A2A]">
+      <div className="relative w-full aspect-[21/9] sm:aspect-[4/1] lg:aspect-[5/1] bg-[#161616] overflow-hidden border-b border-[#2A2A2A]">
         {profile.bannerUrl && (
           <Image
             src={profile.bannerUrl}
@@ -34,13 +34,13 @@ export default function ProfileHeader({ profile, onOpenEditModal }) {
         )}
       </div>
 
-      {/* ── Avatar + Info Row ── */}
-      <div className="px-4 sm:px-6 pb-5">
-        <div className="flex items-end justify-between gap-4 -mt-10 sm:-mt-12">
+      {/* ── Avatar + Info Row (Constrained Width) ── */}
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 pb-5">
+        <div className="flex items-end justify-between gap-4 -mt-12 sm:-mt-16 relative z-10">
 
           {/* Square Avatar — overlaps banner bottom */}
           <div
-            className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0
+            className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0
                         aspect-square rounded-2xl border-4 border-[#121212]
                         overflow-hidden bg-[#2A2A2A]"
           >

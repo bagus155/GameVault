@@ -74,7 +74,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <div className="max-w-screen-md mx-auto animate-fade-in">
+      <div className="w-full animate-fade-in pb-12">
         {/* ── Profile Header ── */}
         <ProfileHeader
           profile={profile}
@@ -82,10 +82,12 @@ export default function ProfilePage() {
         />
 
         {/* ── Top 5 Showcase ── */}
-        <Top5Showcase
-          topGames={profile.topGames ?? []}
-          onOpenEditModal={handleOpenEditModal}
-        />
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 mt-10">
+          <Top5Showcase
+            topGames={profile.topGames ?? []}
+            onOpenEditModal={handleOpenEditModal}
+          />
+        </div>
       </div>
 
       {/* ── Edit Modal ── */}
