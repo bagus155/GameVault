@@ -45,3 +45,6 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 *.db-journal
+
+# User-uploaded profile images (generated at runtime)
+public/uploads/

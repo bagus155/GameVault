@@ -19,10 +19,14 @@ model User {
   username  String   @unique
   email     String   @unique
   password  String
+  avatarUrl String?
+  bannerUrl String?
+  bio       String?  @db.VarChar(160)
   createdAt DateTime @default(now())
 
   reviews   Review[]
   favorites Favorite[]
+  topGames  UserTopGame[]
 
   @@map("users")
 }
@@ -40,6 +44,7 @@ model Game {
 
   reviews   Review[]
   favorites Favorite[]
+  topGames  UserTopGame[]
 
   @@map("games")
 }
@@ -58,6 +63,24 @@ model Favorite {
 
   @@unique([userId, gameId])
   @@map("favorites")
+}
+
+// ─────────────────────────────────────────────
+// UserTopGame Model
+// Stores up to 5 pinned games per user, ordered by position (1–5)
+// ─────────────────────────────────────────────
+model UserTopGame {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  gameId   String
+  position Int    // 1–5
+
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game     Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, position])
+  @@unique([userId, gameId])
+  @@map("user_top_games")
 }
 
 // ─────────────────────────────────────────────
