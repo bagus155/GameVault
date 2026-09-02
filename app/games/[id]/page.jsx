@@ -7,6 +7,7 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getGameById, getGameScreenshots, getGameStores } from '@/lib/rawg';
+import { getOptimizedImageUrl } from '@/utils/imageOptimizer';
 import FavoriteButton from '@/components/game/FavoriteButton';
 import ReviewSection from '@/components/game/ReviewSection';
 import ScreenshotGallery from '@/components/game/ScreenshotGallery';
@@ -90,10 +91,12 @@ export default async function GameDetailPage(props) {
       <div className="relative w-full bg-[#1E1E1E] rounded-card overflow-hidden mb-6 sm:mb-8" style={{ minHeight: 'clamp(240px, 35vw, 320px)' }}>
         {game.background_image && (
           <Image
-            src={game.background_image}
+            src={getOptimizedImageUrl(game.background_image)}
             alt={game.name}
             fill
             priority
+            unoptimized
+            quality={100}
             sizes="100vw"
             className="object-cover object-center opacity-35"
           />
@@ -107,12 +110,13 @@ export default async function GameDetailPage(props) {
           {game.background_image && (
             <div className="flex-shrink-0 w-24 sm:w-32 md:w-40 aspect-[3/4] relative rounded-[8px] overflow-hidden border border-[#2E2E2E] bg-[#262626] shadow-lg">
               <Image
-                src={officialCover || game.background_image}
+                src={getOptimizedImageUrl(officialCover || game.background_image)}
                 alt={game.name}
                 fill
+                unoptimized
+                quality={100}
                 sizes="160px"
                 className="object-cover object-[center_top]"
-                unoptimized={officialCover.includes('steamstatic')}
               />
             </div>
           )}
@@ -153,7 +157,7 @@ export default async function GameDetailPage(props) {
               gameId={String(game.id)}
               title={game.name}
               slug={game.slug}
-              coverUrl={officialCover || game.background_image}
+              coverUrl={`${officialCover || ''}|${game.background_image || ''}`}
             />
           </div>
 
@@ -203,7 +207,7 @@ export default async function GameDetailPage(props) {
             gameId={String(game.id)}
             gameTitle={game.name}
             gameSlug={game.slug}
-            gameCover={game.background_image}
+            gameCover={`${officialCover || ''}|${game.background_image || ''}`}
           />
         </div>
 

@@ -1,12 +1,13 @@
 // components/game/FavoriteButton.jsx
 // ─────────────────────────────────────────────
-// Toggle Favorite Button
+// Toggle Favorite Button — Optimistic UI
 // - Shows filled heart when favorited
 // - Solid #1E1E1E background, solid white / muted text
 // - Redirects to login if not authenticated
+// - Optimistic update: toggles instantly, rolls back on failure
 // ─────────────────────────────────────────────
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -39,8 +40,9 @@ export default function FavoriteButton({ gameId, title, slug, coverUrl }) {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [isFav, setIsFav]     = useState(false);
-  const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
+  // Track in-flight request to prevent double-toggling
+  const inflightRef = useRef(false);
 
   // Check if this game is already favorited
   useEffect(() => {
@@ -67,20 +69,38 @@ export default function FavoriteButton({ gameId, title, slug, coverUrl }) {
       return;
     }
 
-    setLoading(true);
+    // Prevent double-toggling while a request is in flight
+    if (inflightRef.current) return;
+    inflightRef.current = true;
+
+    // ── Optimistic Update ──
+    // Toggle immediately for instant UI feedback
+    const previousState = isFav;
+    setIsFav(!previousState);
+
     try {
       const res = await fetch('/api/favorites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gameId: String(gameId), title, slug, coverUrl }),
       });
+
+      if (!res.ok) {
+        // Server error → rollback
+        setIsFav(previousState);
+        return;
+      }
+
       const data = await res.json();
+      // Reconcile with actual server state for correctness
       if (data.action === 'added')   setIsFav(true);
       if (data.action === 'removed') setIsFav(false);
     } catch (err) {
+      // Network error → rollback to previous state
       console.error('[FavoriteButton] Error:', err);
+      setIsFav(previousState);
     } finally {
-      setLoading(false);
+      inflightRef.current = false;
     }
   };
 
@@ -91,7 +111,7 @@ export default function FavoriteButton({ gameId, title, slug, coverUrl }) {
     <button
       id={`favorite-btn-${gameId}`}
       onClick={handleToggle}
-      disabled={loading || (user && !checked)}
+      disabled={user && !checked}
       className={`flex items-center gap-2 px-5 py-2.5 rounded-[8px] border font-semibold font-sans text-sm transition-all duration-150 ${
         isFav
           ? 'bg-[#1E1E1E] border-[#EF4444] text-[#EF4444] hover:bg-[#2A1A1A]'

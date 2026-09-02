@@ -41,7 +41,7 @@ function FilledSlot({ game, position }) {
       <div className="relative w-full aspect-[3/4] bg-[#262626] overflow-hidden">
         {game.coverUrl ? (
           <Image
-            src={game.coverUrl}
+            src={game.coverUrl.includes('|') ? game.coverUrl.split('|')[0] || game.coverUrl.split('|')[1] : game.coverUrl}
             alt={game.title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"

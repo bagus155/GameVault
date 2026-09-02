@@ -80,6 +80,7 @@ model UserTopGame {
 
   @@unique([userId, position])
   @@unique([userId, gameId])
+  @@index([userId])            // Fast lookup: user's top games list
   @@map("user_top_games")
 }
 
@@ -98,5 +99,8 @@ model Review {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
+  @@index([gameId])           // Fast lookup: all reviews for a game
+  @@index([userId, gameId])   // Fast lookup: user's review on a specific game
   @@map("reviews")
 }
+

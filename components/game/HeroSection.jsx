@@ -4,12 +4,14 @@
 // - Solid Dark Container (#1E1E1E), NO gradient overlay on images
 // - Manual slide controls + auto-rotation
 // - Shows title, rating, genres
+// - Images: HD quality via RAWG CDN resize + Next.js AVIF/WebP
 // ─────────────────────────────────────────────
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import StarRating from '@/components/ui/StarRating';
+import { getOptimizedImageUrl } from '@/utils/imageOptimizer';
 
 function ChevronLeft() {
   return (
@@ -61,13 +63,14 @@ export default function HeroSection({ games = [] }) {
         {current.background_image && (
           <Image
             key={current.id}
-            src={current.background_image}
+            src={getOptimizedImageUrl(current.background_image)}
             alt={current.name}
             fill
             priority
+            unoptimized
+            quality={100}
             sizes="100vw"
             className="object-cover object-center opacity-40 transition-opacity duration-500"
-            unoptimized
           />
         )}
         {/* Solid vignette — solid color blocks, no gradient */}

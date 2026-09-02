@@ -4,11 +4,13 @@
 // - Solid #1E1E1E background, NO gradient overlays
 // - Variable heights (portrait / landscape / square) for masonry effect
 // - Hover: subtle lift effect (no color change)
+// - Images: HD quality via RAWG CDN resize + Next.js AVIF/WebP
 // ─────────────────────────────────────────────
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import StarRating from '@/components/ui/StarRating';
+import { getOptimizedThumbnailUrl } from '@/utils/imageOptimizer';
 
 // ── Stable height variation based on game ID ──
 function getAspectClass(id) {
@@ -53,12 +55,13 @@ export default function GameCard({ game }) {
       <div className={`relative w-full ${aspectClass} overflow-hidden bg-[#262626]`}>
         {game.background_image ? (
           <Image
-            src={game.background_image}
+            src={getOptimizedThumbnailUrl(game.background_image)}
             alt={game.name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             unoptimized
+            quality={100}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 50vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
           // Solid fallback — no gradient

@@ -174,7 +174,7 @@ function SelectedGamesList({ games, onRemove, onMove }) {
           </span>
           <div className="relative w-8 h-8 rounded overflow-hidden bg-[#1E1E1E] flex-shrink-0">
             {game.coverUrl
-              ? <Image src={game.coverUrl} alt={game.title} fill className="object-cover" unoptimized />
+              ? <Image src={game.coverUrl.includes('|') ? game.coverUrl.split('|')[0] || game.coverUrl.split('|')[1] : game.coverUrl} alt={game.title} fill className="object-cover" unoptimized />
               : <span className="absolute inset-0 flex items-center justify-center text-sm select-none">🎮</span>
             }
           </div>
@@ -224,7 +224,7 @@ function FavoritesPicker({ favorites, selectedTopGames, onSelect }) {
           >
             <div className="relative w-8 h-8 rounded flex-shrink-0 overflow-hidden bg-[#262626]">
               {fav.game.coverUrl
-                ? <Image src={fav.game.coverUrl} alt={fav.game.title} fill className="object-cover" unoptimized />
+                ? <Image src={fav.game.coverUrl.includes('|') ? (fav.game.coverUrl.split('|')[1] || fav.game.coverUrl.split('|')[0]) : fav.game.coverUrl} alt={fav.game.title} fill className="object-cover" unoptimized />
                 : <span className="absolute inset-0 flex items-center justify-center text-sm select-none">🎮</span>
               }
             </div>

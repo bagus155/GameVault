@@ -4,10 +4,12 @@
 // - Horizontal scroll with prev/next arrows
 // - Click to open full-size lightbox
 // - Solid #1E1E1E backgrounds only
+// - Images: HD quality via RAWG CDN resize + Next.js AVIF/WebP
 // ─────────────────────────────────────────────
 'use client';
 import { useState, useRef } from 'react';
 import Image from 'next/image';
+import { getOptimizedImageUrl, getOptimizedThumbnailUrl } from '@/utils/imageOptimizer';
 
 function ChevronLeft() {
   return (
@@ -68,9 +70,11 @@ export default function ScreenshotGallery({ screenshots = [] }) {
               aria-label={`Screenshot ${i + 1}`}
             >
               <Image
-                src={ss.image}
+                src={getOptimizedThumbnailUrl(ss.image)}
                 alt={`Screenshot ${i + 1}`}
                 fill
+                unoptimized
+                quality={100}
                 sizes="280px"
                 className="object-cover"
               />
@@ -96,10 +100,11 @@ export default function ScreenshotGallery({ screenshots = [] }) {
         >
           <div className="relative max-w-4xl w-full" onClick={e => e.stopPropagation()}>
             <Image
-              src={screenshots[lightbox].image}
+              src={getOptimizedImageUrl(screenshots[lightbox].image)}
               alt={`Screenshot ${lightbox + 1}`}
               width={1280}
               height={720}
+              quality={90}
               className="w-full rounded-card object-contain"
             />
             {/* Close */}

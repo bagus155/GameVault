@@ -41,9 +41,10 @@ function FavCard({ fav, onRemove }) {
         <div className="relative w-full pb-[60%] bg-[#262626] overflow-hidden">
           {fav.game.coverUrl ? (
             <Image
-              src={fav.game.coverUrl}
+              src={fav.game.coverUrl.includes('|') ? (fav.game.coverUrl.split('|')[1] || fav.game.coverUrl.split('|')[0]) : fav.game.coverUrl}
               alt={fav.game.title}
               fill
+              unoptimized
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             />

@@ -22,11 +22,34 @@ export async function getProfileWithTopGames(userId) {
       createdAt: true,
       topGames: {
         orderBy: { position: 'asc' },
-        include: { game: true },
+        select: {
+          id:       true,
+          position: true,
+          game: {
+            select: {
+              id:       true,
+              title:    true,
+              slug:     true,
+              coverUrl: true,
+            },
+          },
+        },
       },
       favorites: {
         orderBy: { createdAt: 'desc' },
-        include: { game: true },
+        select: {
+          id:        true,
+          gameId:    true,
+          createdAt: true,
+          game: {
+            select: {
+              id:       true,
+              title:    true,
+              slug:     true,
+              coverUrl: true,
+            },
+          },
+        },
       },
     },
   });
