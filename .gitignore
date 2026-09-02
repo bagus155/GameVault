@@ -48,3 +48,19 @@ Thumbs.db
 
 # User-uploaded profile images (generated at runtime)
 public/uploads/
+
+# ─────────────────────────────────────────────
+# Sensitive & Security
+# ─────────────────────────────────────────────
+
+# Database dumps, scripts, and SQL schemas
+*.sql
+*.dump
+*.sql.gz
+
+# Certificates and keys
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
