@@ -109,6 +109,7 @@ export default function HeroSection({ games = [] }) {
         <Link
           href={`/games/${current.id}`}
           id={`hero-cta-${current.id}`}
+          prefetch={true}
           className="inline-flex items-center gap-2 bg-white text-[#121212] text-sm font-semibold font-sans px-5 py-2.5 rounded-[8px] hover:bg-[#E5E5E5] transition-colors duration-150 w-fit"
         >
           Lihat Game

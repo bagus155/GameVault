@@ -50,6 +50,7 @@ export default function GameCard({ game, priority = false }) {
     <Link
       href={`/games/${game.id}`}
       id={`game-card-${game.id}`}
+      prefetch={true}
       className="group block bg-[#1E1E1E] rounded-card overflow-hidden break-inside-avoid mb-4 border border-[#2E2E2E] hover:border-[#3A3A3A] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
     >
       {/* ── Cover Image ── */}
