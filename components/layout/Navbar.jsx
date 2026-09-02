@@ -9,6 +9,7 @@
 // ─────────────────────────────────────────────
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -95,7 +96,7 @@ function ProfileDropdown({ user, onLogout }) {
         {/* Avatar — shows profile image if set, otherwise gray person silhouette */}
         <div className="w-7 h-7 rounded-full bg-[#3A3A3A] flex-shrink-0 overflow-hidden flex items-center justify-center">
           {user.avatarUrl ? (
-            <img src={user.avatarUrl} alt={user.username} className="w-full h-full object-cover" />
+            <Image src={user.avatarUrl} alt={user.username} width={28} height={28} className="w-full h-full object-cover" />
           ) : (
             <svg className="w-5 h-5 text-[#A1A1AA]" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />

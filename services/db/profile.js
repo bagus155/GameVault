@@ -56,14 +56,14 @@ export async function getProfileWithTopGames(userId) {
 }
 
 /**
- * Update a user's profile fields (avatarUrl, bannerUrl, bio).
+ * Update a user's profile fields (username, avatarUrl, bannerUrl, bio).
  * @param {number} userId
- * @param {{ avatarUrl?: string, bannerUrl?: string, bio?: string }} data
+ * @param {{ username?: string, avatarUrl?: string, bannerUrl?: string, bio?: string }} data
  */
-export async function updateUserProfile(userId, { avatarUrl, bannerUrl, bio }) {
+export async function updateUserProfile(userId, { username, avatarUrl, bannerUrl, bio }) {
   return prisma.user.update({
     where: { id: userId },
-    data:  { avatarUrl, bannerUrl, bio },
+    data:  { username, avatarUrl, bannerUrl, bio },
     select: {
       id:        true,
       username:  true,

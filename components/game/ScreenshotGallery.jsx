@@ -73,7 +73,7 @@ export default function ScreenshotGallery({ screenshots = [] }) {
                 src={getOptimizedThumbnailUrl(ss.image)}
                 alt={`Screenshot ${i + 1}`}
                 fill
-                unoptimized
+
                 quality={100}
                 sizes="280px"
                 className="object-cover"

@@ -28,7 +28,6 @@ export default function ProfileHeader({ profile, onOpenEditModal }) {
             alt="Profile banner"
             fill
             className="object-cover"
-            unoptimized
             priority
           />
         )}
@@ -50,7 +49,6 @@ export default function ProfileHeader({ profile, onOpenEditModal }) {
                 alt={profile.username}
                 fill
                 className="object-cover"
-                unoptimized
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-[#2A2A2A]">

@@ -4,7 +4,8 @@
 // PUT  /api/profile  — Update profile fields + Top 5 games
 // ─────────────────────────────────────────────
 import { NextResponse } from 'next/server';
-import { getAuthUser } from '@/lib/auth';
+import { getAuthSession } from '@/lib/authSession';
+import prisma from '@/lib/prisma';
 import {
   getProfileWithTopGames,
   updateUserProfile,
@@ -14,7 +15,7 @@ import {
 // ── GET /api/profile ──────────────────────────
 export async function GET(request) {
   try {
-    const authUser = getAuthUser(request);
+    const authUser = await getAuthSession();
     if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
     }
@@ -34,15 +35,26 @@ export async function GET(request) {
 // ── PUT /api/profile ──────────────────────────
 export async function PUT(request) {
   try {
-    const authUser = getAuthUser(request);
+    const authUser = await getAuthSession();
     if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
     }
 
     const body = await request.json();
-    const { avatarUrl, bannerUrl, bio, topGames } = body;
+    const { username, avatarUrl, bannerUrl, bio, topGames } = body;
 
     // ── Validation ──
+    if (username) {
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          username: { equals: username, mode: 'insensitive' },
+          id: { not: authUser.id }
+        }
+      });
+      if (existingUser) {
+        return NextResponse.json({ error: 'Username sudah digunakan.' }, { status: 409 });
+      }
+    }
     if (bio && bio.length > 160) {
       return NextResponse.json(
         { error: 'Bio maksimal 160 karakter.' },
@@ -59,6 +71,7 @@ export async function PUT(request) {
     // ── Persist changes ──
     const [updatedProfile] = await Promise.all([
       updateUserProfile(authUser.id, {
+        username:  username  ?? undefined,
         avatarUrl: avatarUrl ?? undefined,
         bannerUrl: bannerUrl ?? undefined,
         bio:       bio       ?? undefined,

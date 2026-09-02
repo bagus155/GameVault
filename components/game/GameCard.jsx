@@ -38,8 +38,9 @@ function PlatformTag({ name }) {
 /**
  * @param {Object} props
  * @param {Object} props.game - RAWG game object
+ * @param {boolean} [props.priority=false] - Preload image (for above-the-fold)
  */
-export default function GameCard({ game }) {
+export default function GameCard({ game, priority = false }) {
   const aspectClass = getAspectClass(game.id);
   const platforms = game.parent_platforms?.slice(0, 3) ?? [];
   const rating = game.rating ?? 0;
@@ -58,9 +59,10 @@ export default function GameCard({ game }) {
             src={getOptimizedThumbnailUrl(game.background_image)}
             alt={game.name}
             fill
-            unoptimized
-            quality={100}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 50vw"
+            priority={priority}
+            fetchPriority={priority ? "high" : "auto"}
+            quality={75}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (

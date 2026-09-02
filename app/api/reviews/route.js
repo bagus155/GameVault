@@ -5,7 +5,9 @@
 // Body for POST: { gameId, title, slug, coverUrl, rating, comment }
 // ─────────────────────────────────────────────
 import { NextResponse } from 'next/server';
-import { getAuthUser } from '@/lib/auth';
+import { getAuthSession } from '@/lib/authSession';
+import { rateLimit } from '@/lib/rateLimit';
+import prisma from '@/lib/prisma';
 import {
   getReviewsByGame,
   getReviewByUserAndGame,
@@ -37,9 +39,18 @@ export async function GET(request) {
 
 // ── POST: Submit or update a review ──────────────────────────────────
 export async function POST(request) {
-  const user = getAuthUser(request);
+  const user = await getAuthSession();
   if (!user) {
     return NextResponse.json({ error: 'Silakan login terlebih dahulu.' }, { status: 401 });
+  }
+
+  // Rate Limiting: 5 requests per minute per user for reviews
+  const rl = rateLimit(`review_${user.id}`, 5);
+  if (!rl.success) {
+    return NextResponse.json(
+      { error: 'Terlalu banyak permintaan. Silakan coba lagi nanti.' },
+      { status: 429, headers: { 'Retry-After': Math.ceil((rl.resetTime - Date.now()) / 1000).toString() } }
+    );
   }
 
   try {
@@ -85,7 +96,7 @@ export async function POST(request) {
 
 // ── DELETE: Delete a review ───────────────────────────────────────────
 export async function DELETE(request) {
-  const user = getAuthUser(request);
+  const user = await getAuthSession();
   if (!user) {
     return NextResponse.json({ error: 'Silakan login terlebih dahulu.' }, { status: 401 });
   }
@@ -98,20 +109,18 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'reviewId diperlukan.' }, { status: 400 });
     }
 
-    // Verify ownership before deleting
-    const { getReviewByUserAndGame: _, deleteReview, ...rest } = await import('@/services/db/reviews');
-    const prismaModule = await import('@/lib/prisma');
-    const prisma = prismaModule.default;
+    // Verify ownership and delete in one transaction
+    const { count } = await prisma.review.deleteMany({
+      where: {
+        id: Number(reviewId),
+        userId: user.id
+      }
+    });
 
-    const review = await prisma.review.findUnique({ where: { id: Number(reviewId) } });
-    if (!review) {
-      return NextResponse.json({ error: 'Ulasan tidak ditemukan.' }, { status: 404 });
-    }
-    if (review.userId !== user.id) {
-      return NextResponse.json({ error: 'Tidak diizinkan.' }, { status: 403 });
+    if (count === 0) {
+      return NextResponse.json({ error: 'Ulasan tidak ditemukan atau tidak diizinkan.' }, { status: 404 });
     }
 
-    await prisma.review.delete({ where: { id: Number(reviewId) } });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('[API/reviews DELETE] Error:', error.message);

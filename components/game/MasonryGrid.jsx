@@ -6,8 +6,10 @@
 // - Cards have variable heights for organic look
 // ─────────────────────────────────────────────
 'use client';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, startTransition } from 'react';
 import GameCard from './GameCard';
+
+const SKELETON_HEIGHTS = ['140%', '100%', '75%', '120%', '90%'];
 import { SkeletonCard } from '@/components/ui/LoadingSpinner';
 
 /**
@@ -65,8 +67,10 @@ export default function MasonryGrid({ games: initialGames = [], search = '', gen
         results = results.sort(() => Math.random() - 0.5);
       }
 
-      setGames(prev => reset ? results : [...prev, ...results]);
-      setHasMore(!!data.next);
+      startTransition(() => {
+        setGames(prev => reset ? results : [...prev, ...results]);
+        setHasMore(!!data.next);
+      });
     } catch (err) {
       if (err.name !== 'AbortError') console.error('[MasonryGrid] Fetch error:', err);
     } finally {
@@ -108,7 +112,7 @@ export default function MasonryGrid({ games: initialGames = [], search = '', gen
     return (
       <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4">
         {Array.from({ length: 15 }).map((_, i) => (
-          <SkeletonCard key={i} />
+          <SkeletonCard key={i} className="mb-4" height={SKELETON_HEIGHTS[i % 5]} />
         ))}
       </div>
     );
@@ -130,8 +134,8 @@ export default function MasonryGrid({ games: initialGames = [], search = '', gen
       {/* ── Masonry Column Layout ── */}
       <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4">
         {games.map((game, i) => (
-          <div key={`${game.id}-${i}`} className="animate-fade-in" style={{ animationDelay: `${(i % 10) * 30}ms` }}>
-            <GameCard game={game} />
+          <div key={`${game.id}-${i}`} className={i >= 6 ? "animate-fade-in" : ""} style={i >= 6 ? { animationDelay: `${((i - 6) % 10) * 30}ms` } : {}}>
+            <GameCard game={game} priority={i < 6} />
           </div>
         ))}
       </div>
@@ -141,7 +145,7 @@ export default function MasonryGrid({ games: initialGames = [], search = '', gen
         {loading && !isFirstLoad && (
           <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4 w-full">
             {Array.from({ length: 5 }).map((_, i) => (
-              <SkeletonCard key={`loading-${i}`} />
+              <SkeletonCard key={`loading-${i}`} className="mb-4" height={SKELETON_HEIGHTS[i % 5]} />
             ))}
           </div>
         )}

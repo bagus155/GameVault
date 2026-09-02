@@ -100,7 +100,7 @@ model Review {
   game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
   @@index([gameId])           // Fast lookup: all reviews for a game
-  @@index([userId, gameId])   // Fast lookup: user's review on a specific game
+  @@unique([userId, gameId])  // Anti-spam: 1 user can only review 1 game once
   @@map("reviews")
 }
 

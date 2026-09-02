@@ -7,7 +7,7 @@
 // - Images: HD quality via RAWG CDN resize + Next.js AVIF/WebP
 // ─────────────────────────────────────────────
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, startTransition } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import StarRating from '@/components/ui/StarRating';
@@ -36,8 +36,8 @@ export default function HeroSection({ games = [] }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const next = useCallback(() => setActive(i => (i + 1) % games.length), [games.length]);
-  const prev = useCallback(() => setActive(i => (i - 1 + games.length) % games.length), [games.length]);
+  const next = useCallback(() => startTransition(() => setActive(i => (i + 1) % games.length)), [games.length]);
+  const prev = useCallback(() => startTransition(() => setActive(i => (i - 1 + games.length) % games.length)), [games.length]);
 
   // Auto-rotate every 5 seconds
   useEffect(() => {
@@ -54,8 +54,8 @@ export default function HeroSection({ games = [] }) {
     <section
       className="relative w-full bg-[#1E1E1E] rounded-card overflow-hidden mb-6 sm:mb-8"
       style={{ minHeight: 'clamp(260px, 40vw, 380px)' }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => startTransition(() => setPaused(true))}
+      onMouseLeave={() => startTransition(() => setPaused(false))}
       aria-label="Trending games hero"
     >
       {/* ── Background Image (solid-framed, NOT overlay) ── */}
@@ -67,8 +67,8 @@ export default function HeroSection({ games = [] }) {
             alt={current.name}
             fill
             priority
-            unoptimized
-            quality={100}
+            fetchPriority="high"
+            quality={75}
             sizes="100vw"
             className="object-cover object-center opacity-40 transition-opacity duration-500"
           />
@@ -143,7 +143,7 @@ export default function HeroSection({ games = [] }) {
             {games.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setActive(i)}
+                onClick={() => startTransition(() => setActive(i))}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   i === active ? 'w-5 bg-white' : 'w-1.5 bg-[#3A3A3A]'
                 }`}
