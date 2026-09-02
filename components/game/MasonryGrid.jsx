@@ -134,8 +134,8 @@ export default function MasonryGrid({ games: initialGames = [], search = '', gen
       {/* ── Masonry Column Layout ── */}
       <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4">
         {games.map((game, i) => (
-          <div key={`${game.id}-${i}`} className={i >= 6 ? "animate-fade-in" : ""} style={i >= 6 ? { animationDelay: `${((i - 6) % 10) * 30}ms` } : {}}>
-            <GameCard game={game} priority={i < 6} />
+          <div key={`${game.id}-${i}`} className="animate-fade-in" style={{ animationDelay: `${(i % 10) * 30}ms` }}>
+            <GameCard game={game} priority={i < 5} />
           </div>
         ))}
       </div>

@@ -59,9 +59,9 @@ export default function GameCard({ game, priority = false }) {
             src={getOptimizedThumbnailUrl(game.background_image)}
             alt={game.name}
             fill
+            unoptimized
             priority={priority}
-            fetchPriority={priority ? "high" : "auto"}
-            quality={75}
+            quality={80}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />

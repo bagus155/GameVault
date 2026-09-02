@@ -65,7 +65,7 @@ function ImageUploadZone({ id, label, aspectClass, previewUrl, onFileChange, onC
       >
         {previewUrl ? (
           <>
-            <Image
+            <Image unoptimized
               src={previewUrl}
               alt={label}
               fill
@@ -107,7 +107,7 @@ function ProfileFormTab({ bio, avatarPreview, bannerPreview, onBioChange, onAvat
   return (
     <div className="space-y-5">
       {/* Avatar */}
-      <ImageUploadZone
+      <Image unoptimizedUploadZone
         id="upload-zone-avatar"
         label="Foto Profil"
         aspectClass="aspect-square max-w-[120px]"
@@ -117,7 +117,7 @@ function ProfileFormTab({ bio, avatarPreview, bannerPreview, onBioChange, onAvat
       />
 
       {/* Banner */}
-      <ImageUploadZone
+      <Image unoptimizedUploadZone
         id="upload-zone-banner"
         label="Foto Banner"
         aspectClass="aspect-[3/1]"
@@ -174,7 +174,7 @@ function SelectedGamesList({ games, onRemove, onMove }) {
           </span>
           <div className="relative w-8 h-8 rounded overflow-hidden bg-[#1E1E1E] flex-shrink-0">
             {game.coverUrl
-              ? <Image src={game.coverUrl.includes('|') ? game.coverUrl.split('|')[0] || game.coverUrl.split('|')[1] : game.coverUrl} alt={game.title} fill className="object-cover"/>
+              ? <Image unoptimized src={game.coverUrl.includes('|') ? game.coverUrl.split('|')[0] || game.coverUrl.split('|')[1] : game.coverUrl} alt={game.title} fill className="object-cover"/>
               : <span className="absolute inset-0 flex items-center justify-center text-sm select-none">🎮</span>
             }
           </div>
@@ -224,7 +224,7 @@ function FavoritesPicker({ favorites, selectedTopGames, onSelect }) {
           >
             <div className="relative w-8 h-8 rounded flex-shrink-0 overflow-hidden bg-[#262626]">
               {fav.game.coverUrl
-                ? <Image src={fav.game.coverUrl.includes('|') ? (fav.game.coverUrl.split('|')[1] || fav.game.coverUrl.split('|')[0]) : fav.game.coverUrl} alt={fav.game.title} fill className="object-cover"/>
+                ? <Image unoptimized src={fav.game.coverUrl.includes('|') ? (fav.game.coverUrl.split('|')[1] || fav.game.coverUrl.split('|')[0]) : fav.game.coverUrl} alt={fav.game.title} fill className="object-cover"/>
                 : <span className="absolute inset-0 flex items-center justify-center text-sm select-none">🎮</span>
               }
             </div>

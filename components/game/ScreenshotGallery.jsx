@@ -69,7 +69,7 @@ export default function ScreenshotGallery({ screenshots = [] }) {
               style={{ width: '280px', height: '158px' }}
               aria-label={`Screenshot ${i + 1}`}
             >
-              <Image
+              <Image unoptimized
                 src={getOptimizedThumbnailUrl(ss.image)}
                 alt={`Screenshot ${i + 1}`}
                 fill
@@ -99,7 +99,7 @@ export default function ScreenshotGallery({ screenshots = [] }) {
           onClick={() => setLightbox(null)}
         >
           <div className="relative max-w-4xl w-full" onClick={e => e.stopPropagation()}>
-            <Image
+            <Image unoptimized
               src={getOptimizedImageUrl(screenshots[lightbox].image)}
               alt={`Screenshot ${lightbox + 1}`}
               width={1280}

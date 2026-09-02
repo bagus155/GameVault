@@ -40,7 +40,7 @@ function FilledSlot({ game, position }) {
       {/* Cover image */}
       <div className="relative w-full aspect-[3/4] bg-[#262626] overflow-hidden">
         {game.coverUrl ? (
-          <Image
+          <Image unoptimized
             src={game.coverUrl.includes('|') ? game.coverUrl.split('|')[0] || game.coverUrl.split('|')[1] : game.coverUrl}
             alt={game.title}
             fill

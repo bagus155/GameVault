@@ -8,17 +8,22 @@
 // via its built-in optimizer based on the `sizes` and `quality` props.
 //
 // This utility provides a safe passthrough that:
-// - Rewrites URLs to use RAWG's native CDN resizing to drastically reduce payload
+// - Strips any existing crop/resize fragments from RAWG URLs
+//   (restoring the original full-resolution source)
 // - Returns non-RAWG URLs unchanged
 // ─────────────────────────────────────────────
 
 const RAWG_MEDIA_PREFIX = 'https://media.rawg.io/media/';
 
 /**
- * Ensure a RAWG image URL points to a compressed 720p/1080p resolution.
+ * Ensure a RAWG image URL points to the full-resolution original.
+ * If the URL contains a /crop/ or /resize/ fragment (e.g. from older
+ * cached data), strip it to restore the original high-res source.
+ *
+ * Non-RAWG URLs (Steam, Supabase, etc.) pass through unchanged.
  *
  * @param {string|null|undefined} url - Image URL
- * @returns {string} Resized URL
+ * @returns {string} Full-resolution URL
  */
 export function getOptimizedImageUrl(url) {
   if (!url || typeof url !== 'string') return url ?? '';
@@ -27,32 +32,26 @@ export function getOptimizedImageUrl(url) {
   if (!url.startsWith(RAWG_MEDIA_PREFIX)) return url;
 
   // Extract path after /media/
-  let mediaPath = url.slice(RAWG_MEDIA_PREFIX.length);
+  const mediaPath = url.slice(RAWG_MEDIA_PREFIX.length);
 
-  // Strip any existing crop/resize to start fresh
+  // Strip any crop/resize prefix to get the original full-res image
+  // e.g. "crop/600/400/games/abc/img.jpg" → "games/abc/img.jpg"
+  // e.g. "resize/420/-/screenshots/abc/img.jpg" → "screenshots/abc/img.jpg"
   if (mediaPath.startsWith('crop/') || mediaPath.startsWith('resize/')) {
-    mediaPath = mediaPath.replace(/^(?:resize|crop)\/[^/]+\/[^/]+\//, '');
+    const cleanPath = mediaPath.replace(/^(?:resize|crop)\/[^/]+\/[^/]+\//, '');
+    return `${RAWG_MEDIA_PREFIX}${cleanPath}`;
   }
 
-  // Use RAWG native resize to max 1280 width (drastically reduces payload from 4K)
-  return `${RAWG_MEDIA_PREFIX}resize/1280/-/${mediaPath}`;
+  return url;
 }
 
 /**
- * Ensure a RAWG image URL points to a tiny cropped thumbnail.
+ * Alias — same as getOptimizedImageUrl since Next.js <Image/> handles
+ * all sizing via the `sizes` prop. Kept for API compatibility.
  *
  * @param {string|null|undefined} url - Image URL
- * @returns {string} Cropped thumbnail URL
+ * @returns {string} Full-resolution URL
  */
 export function getOptimizedThumbnailUrl(url) {
-  if (!url || typeof url !== 'string') return url ?? '';
-  if (!url.startsWith(RAWG_MEDIA_PREFIX)) return url;
-
-  let mediaPath = url.slice(RAWG_MEDIA_PREFIX.length);
-  if (mediaPath.startsWith('crop/') || mediaPath.startsWith('resize/')) {
-    mediaPath = mediaPath.replace(/^(?:resize|crop)\/[^/]+\/[^/]+\//, '');
-  }
-
-  // Use RAWG native crop to 600x400 (drastically reduces payload for masonry grid)
-  return `${RAWG_MEDIA_PREFIX}crop/600/400/${mediaPath}`;
+  return getOptimizedImageUrl(url);
 }

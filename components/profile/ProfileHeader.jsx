@@ -23,7 +23,7 @@ export default function ProfileHeader({ profile, onOpenEditModal }) {
       {/* ── Banner ── */}
       <div className="relative w-full aspect-[21/9] sm:aspect-[4/1] lg:aspect-[5/1] bg-[#161616] overflow-hidden border-b border-[#2A2A2A]">
         {profile.bannerUrl && (
-          <Image
+          <Image unoptimized
             src={profile.bannerUrl}
             alt="Profile banner"
             fill
@@ -44,7 +44,7 @@ export default function ProfileHeader({ profile, onOpenEditModal }) {
                         overflow-hidden bg-[#2A2A2A]"
           >
             {profile.avatarUrl ? (
-              <Image
+              <Image unoptimized
                 src={profile.avatarUrl}
                 alt={profile.username}
                 fill

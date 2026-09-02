@@ -67,8 +67,8 @@ export default function HeroSection({ games = [] }) {
             alt={current.name}
             fill
             priority
-            fetchPriority="high"
-            quality={75}
+            unoptimized
+            quality={85}
             sizes="100vw"
             className="object-cover object-center opacity-40 transition-opacity duration-500"
           />
