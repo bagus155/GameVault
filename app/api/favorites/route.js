@@ -5,12 +5,12 @@
 // Body for POST: { gameId, title, slug, coverUrl }
 // ─────────────────────────────────────────────
 import { NextResponse } from 'next/server';
-import { getAuthSession } from '@/lib/authSession';
+import { getAuthUser } from '@/lib/auth';
 import { getUserFavorites, toggleFavorite, upsertGame } from '@/services/db/favorites';
 
 // ── GET: Return all favorites for authenticated user ──────────────────
 export async function GET(request) {
-  const user = await getAuthSession();
+  const user = getAuthUser(request);
   if (!user) {
     return NextResponse.json({ error: 'Silakan login terlebih dahulu.' }, { status: 401 });
   }
@@ -26,7 +26,7 @@ export async function GET(request) {
 
 // ── POST: Toggle favorite ─────────────────────────────────────────────
 export async function POST(request) {
-  const user = await getAuthSession();
+  const user = getAuthUser(request);
   if (!user) {
     return NextResponse.json({ error: 'Silakan login terlebih dahulu.' }, { status: 401 });
   }

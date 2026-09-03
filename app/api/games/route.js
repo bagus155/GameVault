@@ -5,18 +5,10 @@
 // ─────────────────────────────────────────────
 import { NextResponse } from 'next/server';
 import { getGames } from '@/lib/rawg';
-import { rateLimit } from '@/lib/rateLimit';
+
 
 export async function GET(request) {
-  // Rate Limiting: max 30 requests per minute per IP for RAWG proxy
-  const ip = request.headers.get('x-forwarded-for') || request.ip || '127.0.0.1';
-  const rl = rateLimit(`rawg_games_${ip}`, 30);
-  if (!rl.success) {
-    return NextResponse.json(
-      { error: 'Terlalu banyak permintaan. Silakan coba lagi nanti.' },
-      { status: 429, headers: { 'Retry-After': Math.ceil((rl.resetTime - Date.now()) / 1000).toString() } }
-    );
-  }
+
 
   try {
     const { searchParams } = new URL(request.url);
